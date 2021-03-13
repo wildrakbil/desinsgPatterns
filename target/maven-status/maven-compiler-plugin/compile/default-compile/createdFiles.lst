@@ -1,0 +1,9 @@
+com\desing\patterns\Main.class
+com\desing\patterns\lazyExample\ContactListImpl.class
+com\desing\patterns\lazyExample\ContactListProxyImpl.class
+com\desing\patterns\proxyExample\ImageProxy.class
+com\desing\patterns\proxyExample\ImageProxy$1.class
+com\desing\patterns\proxyExample\ImageComponent.class
+com\desing\patterns\lazyExample\ContactList.class
+com\desing\patterns\proxyExample\ImageProxyTestDrive.class
+com\desing\patterns\lazyExample\EmployeeDAO.class
