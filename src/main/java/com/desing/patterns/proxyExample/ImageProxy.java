@@ -8,50 +8,50 @@ import java.net.URL;
  * Created by AnDrEy on 3/2/2021.
  */
 public class ImageProxy implements Icon {
-    ImageIcon imageIcon;
-    URL imageURL;
-    Thread retrievalThread;
-    boolean retrieving = false;
+    ImageIcon _imageIcon;
+    URL _imageURL;
+    Thread _retrievalThread;
+    boolean _retrieving = false;
 
     public ImageProxy(URL url) {
-        imageURL = url;
+        _imageURL = url;
     }
 
     public int getIconWidth() {
-        if (imageIcon != null) {
-            return imageIcon.getIconWidth();
+        if (_imageIcon != null) {
+            return _imageIcon.getIconWidth();
         } else {
             return 400;
         }
     }
 
     public int getIconHeight() {
-        if (imageIcon != null) {
-            return imageIcon.getIconHeight();
+        if (_imageIcon != null) {
+            return _imageIcon.getIconHeight();
         } else {
             return 400;
         }
     }
 
     public void paintIcon(final Component c, Graphics g, int x, int y) {
-        if (imageIcon != null) {
-            imageIcon.paintIcon(c, g, x, y);
+        if (_imageIcon != null) {
+            _imageIcon.paintIcon(c, g, x, y);
         } else {
             g.setColor(Color.WHITE);
             g.drawString("Loading CD cover, please wait...", x + 100, y + 190);
-            if (!retrieving) {
-                retrieving = true;
-                retrievalThread = new Thread(new Runnable() {
+            if (!_retrieving) {
+                _retrieving = true;
+                _retrievalThread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            imageIcon = new ImageIcon(imageURL, "CD Cover");
+                            _imageIcon = new ImageIcon(_imageURL, "CD Cover");
                             c.repaint();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 });
-                retrievalThread.start();
+                _retrievalThread.start();
             }
         }
     }
