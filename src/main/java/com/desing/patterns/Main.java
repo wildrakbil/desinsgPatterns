@@ -1,19 +1,41 @@
 package com.desing.patterns;
 
 import com.desing.exercise.medidorDeSensores.*;
+import com.desing.patterns.behavioral.iterator.implementacion.AgregateConcrete;
+import com.desing.patterns.behavioral.iterator.interfaces.MyIterator;
+import com.desing.patterns.behavioral.iterpreter.Contexto;
+import com.desing.patterns.behavioral.iterpreter.Expresion;
+import com.desing.patterns.behavioral.iterpreter.Interprete;
+import com.desing.patterns.behavioral.mediator.MediatorDemo;
 import com.desing.patterns.behavioral.nullObject.AbstractCustomer;
 import com.desing.patterns.behavioral.nullObject.CustomerFactory;
+import com.desing.patterns.behavioral.state.alarm.context.AlertStateContext;
+import com.desing.patterns.behavioral.state.alarm.state.Silent;
+import com.desing.patterns.behavioral.state.game.noPatternEnum.State;
+import com.desing.patterns.behavioral.state.game.withPattern.context.GameContext;
+import com.desing.patterns.behavioral.state.game.withPattern.states.DeadState;
+import com.desing.patterns.behavioral.state.game.withPattern.states.HealthyState;
+import com.desing.patterns.behavioral.state.game.withPattern.states.SurvivalState;
+import com.desing.patterns.behavioral.state.tvRemote.noPattern.TVRemoteBasic;
+import com.desing.patterns.behavioral.state.tvRemote.pattern.context.TVContext;
+import com.desing.patterns.behavioral.state.tvRemote.pattern.state.TVStartState;
+import com.desing.patterns.behavioral.state.tvRemote.pattern.state.TVStopState;
+import com.desing.patterns.behavioral.state.vehicle.conPatron.contexto.Vehiculo;
+import com.desing.patterns.behavioral.state.vehicle.sinPatron.VehiculoBasico;
+import com.desing.patterns.behavioral.visitor.Elemento;
+import com.desing.patterns.behavioral.visitor.ElementoL;
+import com.desing.patterns.behavioral.visitor.Visitante;
 import com.desing.patterns.creational.abstarcfFactory.Application;
 import com.desing.patterns.creational.abstarcfFactory.factories.IGUIFactory;
 import com.desing.patterns.creational.abstarcfFactory.factories.MacOSFactory;
 import com.desing.patterns.creational.abstarcfFactory.factories.WindowsFactory;
 import com.desing.patterns.creational.builder.Cafe;
 import com.desing.patterns.creational.builder.Coffee;
-
 import com.desing.patterns.creational.lazyInitialization.Company;
 import com.desing.patterns.creational.lazyInitialization.ContactList;
 import com.desing.patterns.creational.lazyInitialization.ContactListProxyImpl;
 import com.desing.patterns.creational.lazyInitialization.EmployeeDAO;
+import com.desing.patterns.creational.objectPool.JDBCConnectionPool;
 import com.desing.patterns.creational.prototype.game.sinUsarClonable.Enemigo;
 import com.desing.patterns.creational.prototype.game.sinUsarClonable.GestorEnemigo;
 import com.desing.patterns.creational.prototype.price.PriceListImpl;
@@ -22,17 +44,24 @@ import com.desing.patterns.creational.prototype.price.PrototypeFactory;
 import com.desing.patterns.creational.singleton.Reloj;
 import com.desing.patterns.creational.singleton.RelojSingleton;
 import com.desing.patterns.structural.adapter.*;
+import com.desing.patterns.structural.adapter.Robot;
 import com.desing.patterns.structural.bridge.CAbstraction;
 import com.desing.patterns.structural.bridge.CImplementationC;
 import com.desing.patterns.structural.bridge.IBridge;
+import com.desing.patterns.structural.composite.component.CompositeProduct;
+import com.desing.patterns.structural.composite.component.SimpleProduct;
+import com.desing.patterns.structural.composite.order.SaleOrder;
 import com.desing.patterns.structural.decorator.burgerCombos.VentanaMenu;
 import com.desing.patterns.structural.decorator.clothing.components.IPersona;
 import com.desing.patterns.structural.decorator.clothing.components.Persona;
 import com.desing.patterns.structural.decorator.clothing.decorators.Chaqueta;
 import com.desing.patterns.structural.decorator.clothing.decorators.Impermeable;
 import com.desing.patterns.structural.decorator.clothing.decorators.Sueter;
+import com.desing.patterns.structural.flyweight.Forest;
 import com.desing.patterns.structural.proxy.ImageProxyTestDrive;
 
+import java.awt.*;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,45 +73,263 @@ import java.util.Map;
  */
 public class Main {
 
+    static int CANVAS_SIZE = 500;
+    static int TREES_TO_DRAW = 1000000;
+    static int TREE_TYPES = 2;
+
 
     public static void main(String[] args) throws Exception {
 
         /**
          * Behavioral patterns
          */
-
+        //iterator();
+        //interpetre();
+        //mediatro();
         nullObject();
+        //state();
+        //visitor();
+
 
         /**
          * Creational patterns
          */
-
-        abstractFActory();
-        builder();
-        lazyInitialization();
-        protptype();
-        singleton();
+        //abstractFActory();
+        //builder();
+        //lazyInitialization();
+        //objectPool();
+        //protptype();
+        //singleton();
 
         /**
          * Structural patterns
          */
-
-        adapter();
-        bridge();
-        decorator();
-        proxy();
-
+        //adapter();
+        //bridge();
+        //composite();
+        //decorator();
+        //flyweigth();
+        //proxy();
 
         /**
          * Class exercises
          */
 
-        medidorDeSensores();
+        //medidorDeSensores();
 
 
     }
 
-    private static void bridge(){
+    private static void objectPool(){
+        //TODO: cambiar de ejemplo
+        // Create the ConnectionPool:
+        JDBCConnectionPool pool = new JDBCConnectionPool(
+                "org.hsqldb.jdbcDriver", "jdbc:hsqldb://localhost/mydb",
+                "sa", "secret");
+        // Get a connection:
+        Connection con = pool.checkOut();
+        // Use the connection
+        // Return the connection:
+        pool.checkIn(con);
+
+    }
+    private static void composite(){
+        SimpleProduct ram4gb = new SimpleProduct("Memoria RAM 4GB", 750, "KingStone");
+
+        CompositeProduct gammerPC = new CompositeProduct("Gammer PC");
+        gammerPC.addProduct(ram4gb);
+
+        SaleOrder gammerOrder = new SaleOrder(1, "Juan Perez");
+        gammerOrder.addProduct(gammerPC);
+        gammerOrder.addProduct(ram4gb);
+        gammerOrder.printOrder();
+    }
+
+    private static void flyweigth(){
+        Forest forest = new Forest();
+        for (int i = 0; i < Math.floor(TREES_TO_DRAW / TREE_TYPES); i++) {
+            forest.plantTree(random(0, CANVAS_SIZE), random(0, CANVAS_SIZE),
+                    "Summer Oak", Color.GREEN, "Oak texture stub");
+            forest.plantTree(random(0, CANVAS_SIZE), random(0, CANVAS_SIZE),
+                    "Autumn Oak", Color.ORANGE, "Autumn Oak texture stub");
+        }
+        forest.setSize(CANVAS_SIZE, CANVAS_SIZE);
+        forest.setVisible(true);
+
+        System.out.println(TREES_TO_DRAW + " trees drawn");
+        System.out.println("---------------------");
+        System.out.println("Memory usage:");
+        System.out.println("Tree size (8 bytes) * " + TREES_TO_DRAW);
+        System.out.println("+ TreeTypes size (~30 bytes) * " + TREE_TYPES + "");
+        System.out.println("---------------------");
+        System.out.println("Total: " + ((TREES_TO_DRAW * 8 + TREE_TYPES * 30) / 1024 / 1024) +
+                "MB (instead of " + ((TREES_TO_DRAW * 38) / 1024 / 1024) + "MB)");
+    }
+
+    private static int random(int min, int max) {
+        return min + (int) (Math.random() * ((max - min) + 1));
+    }
+
+    private static void mediatro(){
+        new MediatorDemo();
+    }
+
+    private static void iterator() {
+        try {
+            // Crear el objeto agregado que contiene la lista (un vector en este ejemplo)
+            AgregateConcrete agregado = new AgregateConcrete();
+            // Crear el objeto iterador para recorrer la lista
+            MyIterator iterador = agregado.getIterador();
+            // Mover una posición adelante y mostrar el elemento
+            String obj = (String) iterador.primero();
+            System.out.println(obj);
+            // Mover dos posiciones adelante
+            iterador.siguiente();
+            iterador.siguiente();
+            // Mostrar el elemento actual
+            System.out.println((String) iterador.actual() + "\n");
+            // Volver al principio
+            iterador.primero();
+            // Recorrer todo
+            while (iterador.hayMas() == true) {
+                System.out.println(iterador.siguiente());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void interpetre() {
+        Contexto contexto = new Contexto("Osos, Leones y Tigres");
+        Expresion definicion = Interprete.construirArbolInterprete();
+        definicion.procesar(contexto);
+        System.out.println(contexto.getOutput());
+    }
+
+    private static void state() {
+
+        System.out.println("[********************]");
+        System.out.println("[******* Game *******]");
+        System.out.println("[********************]");
+
+        System.out.println("======= withPAttren ========");
+        GameContext contextWithPAttren = new GameContext();
+        contextWithPAttren.setState(new HealthyState());
+        contextWithPAttren.gameAction();
+        contextWithPAttren.setState(new SurvivalState());
+        contextWithPAttren.gameAction();
+        contextWithPAttren.setState(new DeadState());
+        contextWithPAttren.gameAction();
+
+
+        System.out.println("======= noPatternConditional ========");
+        com.desing.patterns.behavioral.state.game.noPatternConditional.GameContext contextnoPatternConditional = new com.desing.patterns.behavioral.state.game.noPatternConditional.GameContext();
+        contextnoPatternConditional.gameAction("healthy");
+        contextnoPatternConditional.gameAction("survival");
+        contextnoPatternConditional.gameAction("dead");
+
+        System.out.println("======= noPatternEnum ========");
+        com.desing.patterns.behavioral.state.game.noPatternEnum.GameContext contextNoPatternEnum = new com.desing.patterns.behavioral.state.game.noPatternEnum.GameContext();
+        contextNoPatternEnum.gameAction(State.Healthy);
+        contextNoPatternEnum.gameAction(State.Survival);
+        contextNoPatternEnum.gameAction(State.Dead);
+
+        System.out.println("[***********************]");
+        System.out.println("[******* vehicle *******]");
+        System.out.println("[***********************]");
+
+        System.out.println("======= VehiculoBasico ========");
+        VehiculoBasico vehiculoBasico = new VehiculoBasico();
+        vehiculoBasico.acelerar();
+        vehiculoBasico.contacto();
+        vehiculoBasico.acelerar();
+        vehiculoBasico.acelerar();
+        vehiculoBasico.acelerar();
+        vehiculoBasico.frenar();
+        vehiculoBasico.frenar();
+        vehiculoBasico.frenar();
+        vehiculoBasico.frenar();
+        vehiculoBasico.contacto();
+
+        System.out.println("======= Vehiculo ========");
+        Vehiculo vehiculo = new Vehiculo();
+        vehiculo.acelerar();
+        vehiculo.contacto();
+        vehiculo.acelerar();
+        vehiculo.acelerar();
+        vehiculo.acelerar();
+        vehiculo.frenar();
+        vehiculo.frenar();
+        vehiculo.frenar();
+        vehiculo.frenar();
+        vehiculo.contacto();
+
+        System.out.println("======= AlertStateContext ========");
+        AlertStateContext stateContext = new AlertStateContext();
+        stateContext.alert();
+        stateContext.alert();
+        stateContext.setState(new Silent());
+        stateContext.alert();
+        stateContext.alert();
+        stateContext.alert();
+
+        System.out.println("[************************]");
+        System.out.println("[******* tvRemote *******]");
+        System.out.println("[************************]");
+
+        System.out.println("======= TVRemoteBasic ========");
+        TVRemoteBasic remote = new TVRemoteBasic();
+        remote.setState("ON");
+        remote.doAction();
+        remote.setState("OFF");
+        remote.doAction();
+
+        System.out.println("======= TVContext ========");
+        TVContext context = new TVContext();
+        com.desing.patterns.behavioral.state.tvRemote.pattern.state.State tvStartState = new TVStartState();
+        com.desing.patterns.behavioral.state.tvRemote.pattern.state.State tvStopState = new TVStopState();
+        context.setState(tvStartState);
+        context.doAction();
+        context.setState(tvStopState);
+        context.doAction();
+
+
+    }
+
+    private static void visitor() {
+        double totalCosto = 0;
+        int totalObjetos = 0;
+        int totalClasificaciones = 0;
+
+        //Creamos la estructura de objetos
+        Elemento estructuraObjeto = new Elemento(89.0, "Botiquin",
+                new Elemento(25.60, "Termometro",
+                        new ElementoL(
+                                new Elemento(35.8, "Antibiotico",
+                                        new Elemento(15.5, "Antiacido",
+                                                new ElementoL(
+                                                        new Elemento(12.8, "Aspirina", null),
+                                                        new Elemento(56.6, "Anti inflamatorio", null)
+                                                )
+                                        )
+                                ),
+                                new Elemento(12.8, "Gasa",
+                                        new Elemento(23.5, "Cinta",
+                                                new Elemento(112.5, "Tijeras", null)))
+                        )
+                )
+        );
+        //Visitamos la estructura de objetos
+        Visitante visitante = new Visitante();
+        visitante.ContarElementos(estructuraObjeto);
+
+        totalCosto = visitante.getTotal();
+        totalClasificaciones = visitante.getClasificaciones();
+        totalObjetos = visitante.getConteo();
+        System.out.println(String.format("se tienen {%d} objetos con un costo de ${%f} en {%d} clasificaciones", totalObjetos, totalCosto, totalClasificaciones));
+    }
+
+    private static void bridge() {
         Map<String, Float> products = new HashMap<>();
 
         products.put("A101", 56.92f);
@@ -97,16 +344,15 @@ public class Main {
         products.put("A151", 47.32f);
 
         IBridge _implementation = new CImplementationC();
-        CAbstraction abstraction = new CAbstraction( _implementation );
+        CAbstraction abstraction = new CAbstraction(_implementation);
 
-        abstraction.showProductsTotal( products );
-        abstraction.showProductsList( products );
+        abstraction.showProductsTotal(products);
+        abstraction.showProductsList(products);
 
     }
 
 
-
-    private static void decorator(){
+    private static void decorator() {
         IPersona person = new Persona();
         person.llevarRopa();
         person = new Chaqueta(person);
@@ -118,10 +364,9 @@ public class Main {
         IPersona personaConImpermeable = new Impermeable(new Persona());
         personaConImpermeable.llevarRopa();
 
-        VentanaMenu ventana=new VentanaMenu();
+        VentanaMenu ventana = new VentanaMenu();
         ventana.setVisible(true);
     }
-
 
 
     private static void adapter() {
