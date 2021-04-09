@@ -1,4 +1,4 @@
-package com.desing.patterns.creational.lazyInitialization;
+package com.desing.patterns.structural.proxy.company;
 
 public class EmployeeDAO {
     private String employeeName;

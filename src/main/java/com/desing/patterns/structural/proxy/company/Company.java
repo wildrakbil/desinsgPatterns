@@ -1,4 +1,4 @@
-package com.desing.patterns.creational.lazyInitialization;
+package com.desing.patterns.structural.proxy.company;
 
 /**
  * Created by AnDrEy on 3/25/2021.

@@ -1,4 +1,4 @@
-package com.desing.patterns.structural.proxy;
+package com.desing.patterns.structural.proxy.image;
 
 import javax.swing.*;
 import java.awt.*;

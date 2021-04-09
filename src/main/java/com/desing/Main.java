@@ -1,4 +1,4 @@
-package com.desing.patterns;
+package com.desing;
 
 import com.desing.exercise.medidorDeSensores.*;
 import com.desing.patterns.behavioral.iterator.implementacion.AgregateConcrete;
@@ -31,11 +31,10 @@ import com.desing.patterns.creational.abstarcfFactory.factories.MacOSFactory;
 import com.desing.patterns.creational.abstarcfFactory.factories.WindowsFactory;
 import com.desing.patterns.creational.builder.Cafe;
 import com.desing.patterns.creational.builder.Coffee;
-import com.desing.patterns.creational.lazyInitialization.Company;
-import com.desing.patterns.creational.lazyInitialization.ContactList;
-import com.desing.patterns.creational.lazyInitialization.ContactListProxyImpl;
-import com.desing.patterns.creational.lazyInitialization.EmployeeDAO;
-import com.desing.patterns.creational.objectPool.JDBCConnectionPool;
+import com.desing.patterns.creational.lazyInitialization.Fruit;
+import com.desing.patterns.creational.lazyInitialization.FruitType;
+import com.desing.patterns.creational.objectPool.Store;
+import com.desing.patterns.creational.objectPool.WorkSpace;
 import com.desing.patterns.creational.prototype.game.sinUsarClonable.Enemigo;
 import com.desing.patterns.creational.prototype.game.sinUsarClonable.GestorEnemigo;
 import com.desing.patterns.creational.prototype.price.PriceListImpl;
@@ -58,10 +57,13 @@ import com.desing.patterns.structural.decorator.clothing.decorators.Chaqueta;
 import com.desing.patterns.structural.decorator.clothing.decorators.Impermeable;
 import com.desing.patterns.structural.decorator.clothing.decorators.Sueter;
 import com.desing.patterns.structural.flyweight.Forest;
-import com.desing.patterns.structural.proxy.ImageProxyTestDrive;
+import com.desing.patterns.structural.proxy.company.Company;
+import com.desing.patterns.structural.proxy.company.ContactList;
+import com.desing.patterns.structural.proxy.company.ContactListProxyImpl;
+import com.desing.patterns.structural.proxy.company.EmployeeDAO;
+import com.desing.patterns.structural.proxy.image.ImageProxyTestDrive;
 
 import java.awt.*;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +88,7 @@ public class Main {
         //iterator();
         //interpetre();
         //mediatro();
-        nullObject();
+        //nullObject();
         //state();
         //visitor();
 
@@ -97,7 +99,7 @@ public class Main {
         //abstractFActory();
         //builder();
         //lazyInitialization();
-        //objectPool();
+        objectPool();
         //protptype();
         //singleton();
 
@@ -120,20 +122,21 @@ public class Main {
 
     }
 
-    private static void objectPool(){
-        //TODO: cambiar de ejemplo
-        // Create the ConnectionPool:
-        JDBCConnectionPool pool = new JDBCConnectionPool(
-                "org.hsqldb.jdbcDriver", "jdbc:hsqldb://localhost/mydb",
-                "sa", "secret");
-        // Get a connection:
-        Connection con = pool.checkOut();
-        // Use the connection
-        // Return the connection:
-        pool.checkIn(con);
-
+    private static void objectPool() {
+        Store store = new Store();
+        store.employWorker();
+        store.OrderEquipment();
+        WorkSpace obj = store.objPool.GiveEquipmentWorker();
+        System.out.print("The value of the counter in the Warehouse class: " + store.objPool.counter);
+        store.CheckThatWorkerWasFired(obj, true);
+        System.out.print(store.workers);
+        store.FireAnEmployee();
+        System.out.print("The value of the counter in the Warehouse class: " + store.objPool.counter);
+        store.CheckThatWorkerWasFired(obj, false);
+        System.out.print(store.workers);
     }
-    private static void composite(){
+
+    private static void composite() {
         SimpleProduct ram4gb = new SimpleProduct("Memoria RAM 4GB", 750, "KingStone");
 
         CompositeProduct gammerPC = new CompositeProduct("Gammer PC");
@@ -145,7 +148,7 @@ public class Main {
         gammerOrder.printOrder();
     }
 
-    private static void flyweigth(){
+    private static void flyweigth() {
         Forest forest = new Forest();
         for (int i = 0; i < Math.floor(TREES_TO_DRAW / TREE_TYPES); i++) {
             forest.plantTree(random(0, CANVAS_SIZE), random(0, CANVAS_SIZE),
@@ -170,7 +173,7 @@ public class Main {
         return min + (int) (Math.random() * ((max - min) + 1));
     }
 
-    private static void mediatro(){
+    private static void mediatro() {
         new MediatorDemo();
     }
 
@@ -391,6 +394,25 @@ public class Main {
 
 
     private static void lazyInitialization() {
+        Fruit fruit = null;
+        fruit.getFruitByTypeName(FruitType.banana);
+        fruit.showAll();
+        fruit.getFruitByTypeName(FruitType.apple);
+        fruit.showAll();
+        fruit.getFruitByTypeName(FruitType.banana);
+        fruit.showAll();
+    }
+
+    private static void proxy() {
+        //Image
+        ImageProxyTestDrive testDrive = null;
+        try {
+            testDrive = new ImageProxyTestDrive();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        testDrive.setVisible(true);
+        //Company
         ContactList contactList = new ContactListProxyImpl();
         Company company = new Company("Geeksforgeeks", "India", "+91-011-28458965", contactList);
         System.out.println("CompanyDAO Name: " + company.getCompanyName());
@@ -402,16 +424,6 @@ public class Main {
         for (EmployeeDAO emp : empList) {
             System.out.println(emp);
         }
-    }
-
-    private static void proxy() {
-        ImageProxyTestDrive testDrive = null;
-        try {
-            testDrive = new ImageProxyTestDrive();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        testDrive.setVisible(true);
     }
 
     private static void medidorDeSensores() {
